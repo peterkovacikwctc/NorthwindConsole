@@ -23,16 +23,27 @@ namespace NorthwindConsole
                 string choice;
                 do
                 {
-                    Console.WriteLine("1) Display Categories");
-                    Console.WriteLine("2) Add Category");
-                    Console.WriteLine("3) Display Category and related products");
-                    Console.WriteLine("4) Display all Categories and their related products");
+                    // Categories
+                    Console.WriteLine("1) Display all categories and their descriptions");
+                    Console.WriteLine("2) Add category");
+                    Console.WriteLine("3) Display category and related products"); // only active products
+                    Console.WriteLine("4) Display all categories and their related products"); // only active products
+                    Console.WriteLine("5) Edit category");
+                    //Products
+                    Console.WriteLine("6) Add product");
+                    Console.WriteLine("7) Edit product");
+                    Console.WriteLine("8) Display all products"); // name only
+                    Console.WriteLine("9) Display specific product"); // all product fields displayed
                     Console.WriteLine("\"q\" to quit");
                     choice = Console.ReadLine();
                     Console.Clear();
                     logger.Info($"Option {choice} selected");
-                    if (choice == "1")
+                    
+                    
+                    if (choice == "1") 
                     {
+                        // Display all categories in the Categories table (CategoryName and Description)
+
                         var db = new NorthwindConsole_32_PAKContext();
                         var query = db.Categories.OrderBy(p => p.CategoryName);
 
@@ -45,8 +56,10 @@ namespace NorthwindConsole
                         }
                         Console.ForegroundColor = ConsoleColor.White;
                     }
-                    else if (choice == "2")
+                    else if (choice == "2") 
                     {
+                        // Add new records to Categories table
+
                         Category category = new Category();
                         Console.WriteLine("Enter Category Name:");
                         category.CategoryName = Console.ReadLine();
@@ -81,8 +94,11 @@ namespace NorthwindConsole
                             }
                         }
                     }
-                    else if (choice == "3")
+                    else if (choice == "3") 
                     {
+                        // Display a specific Category and its related active (not discontinued)
+                        // product data (CategoryName, ProductName)
+
                         var db = new NorthwindConsole_32_PAKContext();
                         var query = db.Categories.OrderBy(p => p.CategoryId);
 
@@ -102,8 +118,12 @@ namespace NorthwindConsole
                             Console.WriteLine(p.ProductName);
                         }
                     }
-                    else if (choice == "4")
+                    else if (choice == "4") 
                     {
+                        // Display all Categories and there related **active** (not discontinued)
+                        // product data (CategoryName, ProductName)
+
+
                         var db = new NorthwindConsole_32_PAKContext();
                         var query = db.Categories.Include("Products").OrderBy(p => p.CategoryId);
                         foreach (var item in query)
@@ -115,6 +135,46 @@ namespace NorthwindConsole
                             }
                         }
                     }
+                    else if (choice == "5") 
+                    { 
+                        // edit specified record from the categories table
+
+
+                        // var db = new NorthwindConsole_32_PAKContext();
+                        // var query = db.Categories.  ;
+                    }
+                     else if (choice == "6") 
+                    {
+                        // add new records to the product table
+
+
+                        // var db = new NorthwindConsole_32_PAKContext();
+                        // var query = db.Categories.  ;
+                    }
+                     else if (choice == "7") 
+                    {
+                        // edit specified record from the Products table
+                        
+                        // var db = new NorthwindConsole_32_PAKContext();
+                        // var query = db.Categories.  ;
+                    }
+                    else if (choice == "8") 
+                    {
+                        // Display all records in the Products table (ProductName only) - user decides
+                        // if they want to see all products, discontinued products, or active (not
+                        // discontinued) products. Discontinued products should be distinguished from active products.
+
+                        // var db = new NorthwindConsole_32_PAKContext();
+                        // var query = db.Categories.  ;
+                    }
+                    else if (choice == "9") // display specific product
+                    {
+                        // display a specific product (all product fields should be displayed)
+                        
+                        // var db = new NorthwindConsole_32_PAKContext();
+                        // var query = db.Categories.  ;
+                    }
+
                     Console.WriteLine();
 
                 } while (choice.ToLower() != "q");
