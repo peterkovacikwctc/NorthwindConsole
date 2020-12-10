@@ -217,7 +217,8 @@ namespace NorthwindConsole
                         }
 
                         else { // invalid choice
-
+                            Console.WriteLine("Invalid choice. Please choose a number: 1, 2, or 3.");
+                            logger.Info("Invalid choice. No products were displayed.");
                         }
                         
                     }
@@ -225,8 +226,59 @@ namespace NorthwindConsole
                     {
                         // display a specific product (all product fields should be displayed)
                         
-                        // var db = new NorthwindConsole_32_PAKContext();
-                        // var query = db.Categories.  ;
+                        var db = new NorthwindConsole_32_PAKContext();
+                        var query = db.Products.OrderBy(p => p.ProductId);
+
+                        // List Products by ID number
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"\nChoose a product to display its information.");
+                        Console.WriteLine($"There are {query.Count()} products to choose from.\n");
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        foreach (var item in query)
+                        {
+                            Console.WriteLine($"{item.ProductName}");
+                        }
+                        Console.ForegroundColor = ConsoleColor.White;
+                        logger.Info($"Products listed by ID.");
+
+                        // Choose product to display information
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("\nType a product name to display its information."); 
+                        Console.ForegroundColor = ConsoleColor.White;
+                        string productChoice = Console.ReadLine();
+
+                        // List product ID, product name, and active/discontinued
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        var query2 = db.Products.Where(p => (p.ProductName == productChoice)); // query the Product
+                        
+                        int counter = 0;
+                        foreach (var item in query2)
+                        {
+                            counter++;
+                            Console.WriteLine($"Product ID: {item.ProductId}");
+                            Console.WriteLine($"Product name: {item.ProductName}");
+                            Console.WriteLine($"Supplier ID: {item.SupplierId}");
+                            Console.WriteLine($"Category ID: {item.CategoryId}");
+                            Console.WriteLine($"Quantity per unit: {item.QuantityPerUnit}");
+                            Console.WriteLine($"Unit price: {item.UnitPrice}");
+                            Console.WriteLine($"Units in stock: {item.UnitsInStock}");
+                            Console.WriteLine($"Units on order {item.UnitsOnOrder}");
+                            Console.WriteLine($"Reorder level: {item.ReorderLevel}");
+                            Console.WriteLine($"Discontinued: {item.Discontinued}");
+
+                            // track with NLog
+                            Console.ForegroundColor = ConsoleColor.White;
+                            logger.Info($"Item properites display for: {item.ProductName}.");
+                        }
+
+                        
+                        if (counter == 0) {
+                            Console.ForegroundColor = ConsoleColor.Magenta;
+                            Console.WriteLine($"'{productChoice}' is not a product in the database.");
+                        }
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        
                     }
 
                     Console.WriteLine();
