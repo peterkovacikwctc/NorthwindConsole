@@ -31,7 +31,7 @@ namespace NorthwindConsole
                     Console.WriteLine("5) Edit category");
                     //Products
                     Console.WriteLine("6) Add product");
-                    Console.WriteLine("7) Edit product");
+                    Console.WriteLine("7) Edit specific product");
                     Console.WriteLine("8) Display all products"); // name only
                     Console.WriteLine("9) Display specific product"); // all product fields displayed
                     Console.WriteLine("\"q\" to quit");
@@ -154,9 +154,11 @@ namespace NorthwindConsole
                      else if (choice == "7") 
                     {
                         // edit specified record from the Products table
-                        
+
                         // var db = new NorthwindConsole_32_PAKContext();
                         // var query = db.Categories.  ;
+
+                        
                     }
                     else if (choice == "8") 
                     {
@@ -164,8 +166,60 @@ namespace NorthwindConsole
                         // if they want to see all products, discontinued products, or active (not
                         // discontinued) products. Discontinued products should be distinguished from active products.
 
-                        // var db = new NorthwindConsole_32_PAKContext();
-                        // var query = db.Categories.  ;
+                        Console.WriteLine("\n1) Display all products");
+                        Console.WriteLine("2) Display only discontinued products");
+                        Console.WriteLine("3) Display only active products");
+                        choice = Console.ReadLine();
+                        
+                        var db = new NorthwindConsole_32_PAKContext();
+
+                        if (choice == "1") { // all products
+                           
+                            var query = db.Products.OrderBy(p => p.ProductName); 
+
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine($"{query.Count()} records returned");
+                            Console.ForegroundColor = ConsoleColor.Magenta;
+                            foreach (var item in query)
+                            {
+                                Console.WriteLine($"{item.ProductName}");
+                            }
+                            Console.ForegroundColor = ConsoleColor.White;
+                            logger.Info($"All records displayed - {query.Count()} records returned");
+                        }
+
+                        else if (choice == "2") { // discontinued products
+                            var query = db.Products.OrderBy(p => p.ProductName).Where(p => (p.Discontinued == true)); // *** discontinued only
+
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine($"{query.Count()} records returned");
+                            Console.ForegroundColor = ConsoleColor.Magenta;
+                            foreach (var item in query)
+                            {
+                                Console.WriteLine($"{item.ProductName}");
+                            }
+                            Console.ForegroundColor = ConsoleColor.White;
+                            logger.Info($"Discontinued products displayed - {query.Count()} records returned");
+                        }
+
+                        else if (choice == "3") { // active products
+                            var query = db.Products.OrderBy(p => p.ProductName).Where(p => (p.Discontinued == false)); // *** active only 
+                            
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine($"{query.Count()} records returned");
+                            Console.ForegroundColor = ConsoleColor.Magenta;
+                            foreach (var item in query)
+                            {
+                                Console.WriteLine($"{item.ProductName}");
+                            }
+                            Console.ForegroundColor = ConsoleColor.White;
+                            logger.Info($"Discontinued products displayed - {query.Count()} records returned");
+                        }
+
+                        else { // invalid choice
+
+                        }
+                        
                     }
                     else if (choice == "9") // display specific product
                     {
