@@ -99,6 +99,10 @@ namespace NorthwindConsole
                                 logger.Error($"{result.MemberNames.First()} : {result.ErrorMessage}");
                             }
                         }
+
+                        var db1 = new NorthwindConsole_32_PAKContext();
+                        db1.AddCategory(category);
+                        logger.Info($"Category and description added - {category.CategoryName}");
                     }
                     else if (choice == "3") 
                     {
