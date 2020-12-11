@@ -141,8 +141,9 @@ namespace NorthwindConsole
                     else if (choice == "5") 
                     { 
                         // edit specified record from the categories table
-
-
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        Console.WriteLine("\nEdit Category - Feature Under Construction");
+                        Console.ForegroundColor = ConsoleColor.White;
                         // var db = new NorthwindConsole_32_PAKContext();
                         // var query = db.Categories.  ;
                     }
