@@ -23,21 +23,23 @@ namespace NorthwindConsole
                 string choice;
                 do
                 {
-                    // Categories
+                    // menu
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("---Menu---");
                     Console.ForegroundColor = ConsoleColor.White;
+                    // Category menu entries
                     Console.WriteLine("1) Display all categories and their descriptions");
                     Console.WriteLine("2) Add category");
                     Console.WriteLine("3) Display specific category and related active product data");
-                    Console.WriteLine("4) Display all categories and their related products"); // only active products
+                    Console.WriteLine("4) Display all categories and their related active product data");
                     Console.WriteLine("5) Edit category");
-                    //Products
+                    //Product menu entries
                     Console.WriteLine("6) Add product");
                     Console.WriteLine("7) Edit specific product");
                     Console.WriteLine("8) Display products (all, discontinued, or active)"); // name only
                     Console.WriteLine("9) Display specific product"); // all product fields displayed
                     Console.WriteLine("\"q\" to quit");
+                    // elicit choice from user
                     choice = Console.ReadLine();
                     Console.Clear();
                     logger.Info($"Option {choice} selected");
@@ -139,12 +141,16 @@ namespace NorthwindConsole
                         var query = db.Categories.Include("Products").OrderBy(p => p.CategoryId);
                         foreach (var item in query)
                         {
+                            Console.ForegroundColor = ConsoleColor.Green;
                             Console.WriteLine($"{item.CategoryName}");
-                            foreach (Product p in item.Products)
+                            
+                            Console.ForegroundColor = ConsoleColor.White;
+                            foreach (Product p in item.Products.Where(p => (p.Discontinued == false)))
                             {
                                 Console.WriteLine($"\t{p.ProductName}");
                             }
                         }
+                        logger.Info("All categories and related active product data have been displayed.");
                     }
                     else if (choice == "5") 
                     { 
