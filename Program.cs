@@ -58,6 +58,7 @@ namespace NorthwindConsole
                             Console.WriteLine($"{item.CategoryName} - {item.Description}");
                         }
                         Console.ForegroundColor = ConsoleColor.White;
+                        logger.Info("All categories displayed (category names and descriptions).");
                     }
                     else if (choice == "2") 
                     {
