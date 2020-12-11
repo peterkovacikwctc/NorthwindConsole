@@ -208,7 +208,6 @@ namespace NorthwindConsole
                         Console.ForegroundColor = ConsoleColor.White;
                         
                         /*
-                        // testing - exit before writing new product to database
                         Console.WriteLine("TESTING - Enter control -c to exit before writing new product to database.");
                         var temporary = Console.ReadLine();
                         */
@@ -230,7 +229,7 @@ namespace NorthwindConsole
                         var query = db.Products.OrderBy(p => p.ProductName); 
 
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine($"Edit a product from list");
+                        Console.WriteLine("Edit a product from list");
                         Console.ForegroundColor = ConsoleColor.Magenta;
                         foreach (var item in query)
                         {
@@ -239,9 +238,96 @@ namespace NorthwindConsole
 
                         // Choose product to edit
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("\nType a product name to display its information."); 
+                        Console.WriteLine("\nType a product name to edit its information."); 
                         Console.ForegroundColor = ConsoleColor.White;
                         string productChoice = Console.ReadLine();
+
+
+                        // query the product to edited
+                        var query2 = db.Products.Where(p => (p.ProductName == productChoice)); // query the Product
+                        
+                        int counter = 0;
+                        foreach (var item in query2)
+                        {
+                            // if counter remains zero, productChoice does not correspond to any product names in database
+                            counter++;
+                            
+                            // used to log initial name before displaying changes
+                            string initialName = item.ProductName;
+
+                            // edit name --------------------
+                            Console.ForegroundColor = ConsoleColor.Magenta;
+                            Console.WriteLine("Enter the new product name: ");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            string name = Console.ReadLine();
+                            //item.ProductName = name;
+
+                            // edit category -----------------
+                            var db1 = new NorthwindConsole_32_PAKContext();
+                            // list categories before choosing category to change
+                            var queryCategory = db1.Categories.OrderBy(c => c.CategoryId);
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("\nList of Categories to choose from: ");
+                            Console.ForegroundColor = ConsoleColor.Magenta;
+                            int counterCategory = 0;
+                            foreach (var categoryItem in queryCategory)
+                            {
+                                Console.WriteLine($"{categoryItem.CategoryId} - {categoryItem.CategoryName}");
+                                counterCategory++;
+                            }
+
+                            // choose category to edit
+                            int catID;
+                            do {
+                                Console.ForegroundColor = ConsoleColor.Magenta;
+                                Console.WriteLine("Enter a new category number: ");
+                                Console.ForegroundColor = ConsoleColor.White;
+                                string tempNumber = Console.ReadLine();
+                                catID = int.Parse(tempNumber);
+
+                                if (catID < 1 || catID > counterCategory) {
+                                    Console.WriteLine($"Use a number between 1 and {counterCategory}\n");
+                                }
+                            } while (catID < 1 || catID > counterCategory);
+                            // item.CategoryId = catID;
+                            
+                            // change discontinued ------------------------
+                            string tempDiscontinued;
+                            do {
+                                Console.ForegroundColor = ConsoleColor.Magenta;
+                                Console.WriteLine("Enter whether product is discontinued (true/false): ");
+                                Console.ForegroundColor = ConsoleColor.White;
+                                tempDiscontinued = Console.ReadLine();
+                                
+                                if (tempDiscontinued != "true" && tempDiscontinued != "false") {
+                                   Console.WriteLine("You must enter 'true' or 'false'."); 
+                                }
+                            } while (tempDiscontinued != "true" && tempDiscontinued != "false");
+                            
+                            // assign new values to Product
+                            item.ProductName = name;
+                            item.CategoryId = catID;
+                            item.Discontinued = bool.Parse(tempDiscontinued);
+
+                            var db2 = new NorthwindConsole_32_PAKContext();
+                            db2.EditProduct(item);
+                            
+                            // track with NLog -----------------------------
+                            Console.ForegroundColor = ConsoleColor.White;
+                            logger.Info($"Item properites modified for: {initialName}.");
+                            logger.Info("New values");
+                            logger.Info($"Product ID: {item.ProductId}");
+                            logger.Info($"Product name: {item.ProductName}");
+                            logger.Info($"Category ID: {item.CategoryId}");
+                            logger.Info($"Discontinued: {item.Discontinued}");
+                        }
+
+                         if (counter == 0) {
+                            Console.ForegroundColor = ConsoleColor.Magenta;
+                            Console.WriteLine($"'{productChoice}' is not a product in the database.");
+                            logger.Info("Product edit was attempted, but input was invalid.");
+                        }
+                        Console.ForegroundColor = ConsoleColor.White; 
                     }
                     else if (choice == "8") 
                     {
@@ -309,8 +395,8 @@ namespace NorthwindConsole
                     {
                         // display a specific product (all product fields should be displayed)
                         
-                        var db = new NorthwindConsole_32_PAKContext();
-                        var query = db.Products.OrderBy(p => p.ProductId);
+                        var db1 = new NorthwindConsole_32_PAKContext();
+                        var query = db1.Products.OrderBy(p => p.ProductId);
 
                         // List Products by ID number
                         Console.ForegroundColor = ConsoleColor.Green;
@@ -332,7 +418,7 @@ namespace NorthwindConsole
 
                         // List product ID, product name, and active/discontinued
                         Console.ForegroundColor = ConsoleColor.Magenta;
-                        var query2 = db.Products.Where(p => (p.ProductName == productChoice)); // query the Product
+                        var query2 = db1.Products.Where(p => (p.ProductName == productChoice)); // query the Product
                         
                         int counter = 0;
                         foreach (var item in query2)
