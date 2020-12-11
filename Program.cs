@@ -18,12 +18,15 @@ namespace NorthwindConsole
         {
             logger.Info("Program started");
 
-                       try
+            try
             {
                 string choice;
                 do
                 {
                     // Categories
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("---Menu---");
+                    Console.ForegroundColor = ConsoleColor.White;
                     Console.WriteLine("1) Display all categories and their descriptions");
                     Console.WriteLine("2) Add category");
                     Console.WriteLine("3) Display category and related products"); // only active products
@@ -147,18 +150,98 @@ namespace NorthwindConsole
                     {
                         // add new records to the product table
 
+                        var db = new NorthwindConsole_32_PAKContext();
+                        
+                        // enter name of Product
+                        string name;
+                        do {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.Write("Enter a name for a new Product: ");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            name = Console.ReadLine();
 
-                        // var db = new NorthwindConsole_32_PAKContext();
-                        // var query = db.Categories.  ;
+                            // error: blank name
+                            if (name == "") {
+                                Console.WriteLine("The product name cannot be blank.\n");
+                            }
+                        } while (name == "");
+
+                        // enter discontinued (true/false) for Product
+                        string discontinued; // convert string to boolean
+                        do {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine($"Is {name} discontinued (true/false)?");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            discontinued = Console.ReadLine();
+
+                            if (discontinued != "true" && discontinued != "false") {
+                                Console.WriteLine("You must enter 'true' or 'false'.");
+                            }
+                        } while (discontinued != "true" && discontinued != "false");
+
+                        
+                        // Enter Category ID
+                        var query = db.Categories.OrderBy(c => c.CategoryId);
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("\nList of Categories: ");
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        int counter = 0;
+                        foreach (var item in query)
+                        {
+                            Console.WriteLine($"{item.CategoryId} - {item.CategoryName}");
+                            counter++;
+                        }
+
+                        int catID;
+                        do {
+                           Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine($"Assign the Product to a Category with the Category Id (1 - {counter})");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            string temp = Console.ReadLine();
+                            catID = int.Parse(temp);
+
+                            Console.ForegroundColor = ConsoleColor.White;
+                            if (catID < 1 || catID > counter) {
+                                Console.WriteLine($"Use a number between 1 and {counter}\n");
+                            }
+                        } while (catID < 1 || catID > counter);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        
+                        /*
+                        // testing - exit before writing new product to database
+                        Console.WriteLine("TESTING - Enter control -c to exit before writing new product to database.");
+                        var temporary = Console.ReadLine();
+                        */
+
+                        var product = new Product { ProductName = name };
+                        product.Discontinued = bool.Parse(discontinued);
+                        product.CategoryId = catID;
+                        
+                        db.AddProduct(product);
+                        logger.Info($"Product and properties added - {name}");
                     }
-                     else if (choice == "7") 
+
+                    else if (choice == "7") 
                     {
                         // edit specified record from the Products table
 
-                        // var db = new NorthwindConsole_32_PAKContext();
-                        // var query = db.Categories.  ;
+                        // List products
+                        var db = new NorthwindConsole_32_PAKContext();
+                        var query = db.Products.OrderBy(p => p.ProductName); 
 
-                        
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"Edit a product from list");
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        foreach (var item in query)
+                        {
+                            Console.WriteLine($"{item.ProductName}");
+                        } 
+
+                        // Choose product to edit
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("\nType a product name to display its information."); 
+                        Console.ForegroundColor = ConsoleColor.White;
+                        string productChoice = Console.ReadLine();
                     }
                     else if (choice == "8") 
                     {
