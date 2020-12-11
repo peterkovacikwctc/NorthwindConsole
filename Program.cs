@@ -29,13 +29,13 @@ namespace NorthwindConsole
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.WriteLine("1) Display all categories and their descriptions");
                     Console.WriteLine("2) Add category");
-                    Console.WriteLine("3) Display category and related products"); // only active products
+                    Console.WriteLine("3) Display specific category and related active product data");
                     Console.WriteLine("4) Display all categories and their related products"); // only active products
                     Console.WriteLine("5) Edit category");
                     //Products
                     Console.WriteLine("6) Add product");
                     Console.WriteLine("7) Edit specific product");
-                    Console.WriteLine("8) Display all products"); // name only
+                    Console.WriteLine("8) Display products (all, discontinued, or active)"); // name only
                     Console.WriteLine("9) Display specific product"); // all product fields displayed
                     Console.WriteLine("\"q\" to quit");
                     choice = Console.ReadLine();
@@ -116,11 +116,18 @@ namespace NorthwindConsole
                         int id = int.Parse(Console.ReadLine());
                         Console.Clear();
                         logger.Info($"CategoryId {id} selected");
-                        Category category = db.Categories.Include("Products").FirstOrDefault(c => c.CategoryId == id);                        Console.WriteLine($"{category.CategoryName} - {category.Description}");
-                        foreach (Product p in category.Products)
+                        Category category = db.Categories.Include("Products").FirstOrDefault(c => c.CategoryId == id);                        
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"{category.CategoryName} - {category.Description}");
+                        
+                        Console.ForegroundColor = ConsoleColor.White;
+                        // changed to only include active product data --- foreach (Product p in category.Products)
+                        foreach (Product p in category.Products.Where(p => (p.Discontinued == false)))
+                        
                         {
                             Console.WriteLine(p.ProductName);
                         }
+                        logger.Info("Display specific Category and its related active product data.");
                     }
                     else if (choice == "4") 
                     {
